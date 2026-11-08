@@ -1,0 +1,22 @@
+{
+  "browser": "Microsoft Edge desktop, headless",
+  "widths": [
+    390,
+    600,
+    800
+  ],
+  "lessons": 178,
+  "questions": 178,
+  "photos": 13,
+  "errors": [],
+  "checks": [
+    "178 lessons, questions, selection, validation and immediate corrections; every displayed photo decoded",
+    "Distinct photo roles for three coats; image audio speaks only option numbers",
+    "No horizontal overflow at 390, 600 and 800 px across home, Parent, credits, lesson, coat quiz, tools and test setup",
+    "Autonomous 5-question test, delayed corrections, score 4/5, retry of exactly one error",
+    "Export/import round trip preserves progress in equi-complete-1 format",
+    "Offline reload through index iframe, all 13 photos available, readiness message, credits; legacy and unrelated caches preserved, obsolete photo cache removed",
+    "Missing image displays explicit recovery state"
+  ],
+  "passed": true
+}

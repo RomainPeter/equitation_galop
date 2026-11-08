@@ -101,7 +101,7 @@ const report={browser:'Microsoft Edge desktop, headless',widths:[390,600,800],le
  await frame.evaluate(()=>parent());
  await frame.waitForFunction(()=>document.getElementById('offlineState')?.textContent.startsWith('Prête hors ligne'));
  const cached=await frame.evaluate(async()=>{
-   const names=await caches.keys(),cache=await caches.open('equi-photos:/:v2');
+   const names=await caches.keys(),cache=await caches.open('equi-photos:/:v3');
    return {names,photos:await Promise.all(PHOTOS.map(p=>cache.match(p.file).then(Boolean)))};
  });
  assert(cached.photos.every(Boolean));assert(cached.names.includes('equi-galop-v1'));assert(cached.names.includes('unrelated-app'));assert(!cached.names.includes('equi-photos:/:obsolete'));

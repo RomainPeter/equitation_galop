@@ -26,9 +26,13 @@ function tabletLayout(){
  function add(node){
    page.append(node);
    if(page.scrollHeight<=limit+1)return;
+   const canSplit=node.children.length&&!node.matches('button,details,.row,.modes,.actions,.statgrid,.photo,.filter,.listrow,label');
+   const tooTall=node.getBoundingClientRect().height>limit;
    node.remove();
+   // Break up a long list before moving it: its first items belong with the heading.
+   if(canSplit&&tooTall){[...node.children].forEach(add);return;}
    if(page.children.length){newPage();page.append(node);if(page.scrollHeight<=limit+1)return;node.remove();}
-   if(node.children.length&& !node.matches('button,details,.row,.modes,.actions,.statgrid,.photo,.filter,.listrow,label')){
+   if(canSplit){
      // Split large collections and adult sections at item boundaries, preserving live controls.
      const children=[...node.children];
      for(const child of children){
@@ -39,7 +43,9 @@ function tabletLayout(){
    if(page.children.length)newPage();
    page.append(node);
  }
- nodes.forEach(add);tabletPage=0;tabletPager.style.display='';turnTabletPage(0);
+ nodes.forEach(add);
+ tabletPages=tabletPages.filter(p=>{if(p.children.length)return true;p.remove();return false});
+ tabletPage=0;tabletPager.style.display='';turnTabletPage(0);
 }
 // Run after each existing screen/action, including nested rendering calls.
 for(const name of ['home','catalog','chapterPage','render','showAnswer','respond','result','testSetup','library','searchLibrary','parent','progressDetail','skills','sources','photoCredits']){

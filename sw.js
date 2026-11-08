@@ -1,7 +1,7 @@
 const ROOT=new URL('./',self.location.href);
 // This namespace never deletes the published application's v1 cache.
 const PREFIX='equi-photos:'+ROOT.pathname+':';
-const CACHE=PREFIX+'v2';
+const CACHE=PREFIX+'v3';
 const CORE=['./','./index.html','./Equi.html','./manifest.webmanifest','./icons/app.svg','./tablet.css','./tablet.js','./photos.css','./photos.js','./assets/photos/catalog.js','./assets/photos/credits.json'];
 let files;
 async function assetList(){

@@ -7,15 +7,15 @@ const screenshots=path.join(root,'docs','captures');
 fs.mkdirSync(screenshots,{recursive:true});
 const report={browser:'Microsoft Edge desktop, headless',widths:[390,600,800],lessons:0,questions:0,photos:13,errors:[],checks:[]};
 (async()=>{
- const server=await require('./serve.cjs').serve(8766);
+ const server=await require('./serve.cjs').serve(8772);
  const browser=await chromium.launch({channel:'msedge',headless:true});
  try{
  const context=await browser.newContext({viewport:{width:600,height:1000}});
  await context.addInitScript(()=>{window.__spoken=[];window.speechSynthesis.speak=u=>window.__spoken.push(u.text);});
  const page=await context.newPage();
  page.on('pageerror',e=>report.errors.push(e.message));
- page.on('response',r=>{if(r.url().startsWith('http://127.0.0.1:8766')&&r.status()>=400)report.errors.push(r.status()+' '+r.url())});
- await page.goto('http://127.0.0.1:8766/Equi.html');
+ page.on('response',r=>{if(r.url().startsWith('http://127.0.0.1:8772')&&r.status()>=400)report.errors.push(r.status()+' '+r.url())});
+ await page.goto('http://127.0.0.1:8772/Equi.html');
  await page.evaluate(async()=>{await caches.open('equi-galop-v1');await caches.open('unrelated-app');await caches.open('equi-photos:/:obsolete');prefs.auto=false;save();await navigator.serviceWorker.ready;});
  await page.waitForFunction(()=>navigator.serviceWorker.controller);
  const loadImages=async()=>{
@@ -91,7 +91,7 @@ const report={browser:'Microsoft Edge desktop, headless',widths:[390,600,800],le
  await page.getByRole('button',{name:'Crédits photographiques',exact:true}).click();await loadImages();
  assert.equal(await page.locator('.photo').count(),13);
  // Use the real launcher and cached app after taking the whole context offline.
- await page.goto('http://127.0.0.1:8766/');
+ await page.goto('http://127.0.0.1:8772/');
  await page.waitForFunction(()=>navigator.serviceWorker.controller);
  await context.setOffline(true);await page.reload();
  const frame=page.frames().find(f=>f.url().includes('Equi.html'));assert(frame);
@@ -101,7 +101,7 @@ const report={browser:'Microsoft Edge desktop, headless',widths:[390,600,800],le
  await frame.evaluate(()=>parent());
  await frame.waitForFunction(()=>document.getElementById('offlineState')?.textContent.startsWith('Prête hors ligne'));
  const cached=await frame.evaluate(async()=>{
-   const names=await caches.keys(),cache=await caches.open('equi-photos:/:v1');
+   const names=await caches.keys(),cache=await caches.open('equi-photos:/:v2');
    return {names,photos:await Promise.all(PHOTOS.map(p=>cache.match(p.file).then(Boolean)))};
  });
  assert(cached.photos.every(Boolean));assert(cached.names.includes('equi-galop-v1'));assert(cached.names.includes('unrelated-app'));assert(!cached.names.includes('equi-photos:/:obsolete'));
@@ -111,7 +111,7 @@ const report={browser:'Microsoft Edge desktop, headless',widths:[390,600,800],le
  // Explicit missing-photo state with worker disabled so cached media cannot hide the failure.
  const failed=await browser.newContext({serviceWorkers:'block'});const fp=await failed.newPage();
  await fp.route('**/assets/photos/robes/n1.webp',route=>route.abort());
- await fp.goto('http://127.0.0.1:8766/Equi.html');await fp.evaluate(()=>{prefs.auto=false;startOne('robes_01')});
+ await fp.goto('http://127.0.0.1:8772/Equi.html');await fp.evaluate(()=>{prefs.auto=false;startOne('robes_01')});
  await fp.locator('.photo-error').waitFor({state:'visible'});
  report.checks.push('Missing image displays explicit recovery state');
  await failed.close();
